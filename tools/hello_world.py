@@ -1,7 +1,9 @@
 import logging
+from mcp_server import mcp
 
 logger = logging.getLogger(__name__)
 
+@mcp.tool()
 def hello_world(name: str = "World") -> str:
     """Say hello to someone.
 
@@ -9,4 +11,4 @@ def hello_world(name: str = "World") -> str:
         name: Name to greet (defaults to "World")
     """
     logger.info(f"Greeting request for: {name}")
-    return f"Hello, {name}! 👋 Change #2"
+    return f"Hello, {name}! 👋"
