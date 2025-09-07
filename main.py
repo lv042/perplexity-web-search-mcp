@@ -7,5 +7,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
+    logger.info("Tools registered: hello_world, perplexity_sonar_search")
     logger.info("Starting Perplexity Sonar MCP server...")
     mcp.run()
