@@ -1,6 +1,7 @@
 import os
 import httpx
 import logging
+from typing import Optional
 from enum import Enum
 from mcp_server import mcp
 
@@ -19,13 +20,17 @@ class SearchMode(str, Enum):
     WEB = "web"
     ACADEMIC = "academic"
 
-def _call_perplexity_api(query: str, model: str = PerplexityModel.SONAR, search_mode: str = SearchMode.WEB) -> str:
+def _call_perplexity_api(query: str, model: str = PerplexityModel.SONAR, search_mode: str = SearchMode.WEB, 
+                        recency_filter: Optional[str] = None, city: Optional[str] = None, country: Optional[str] = None) -> str:
     """Helper function to call Perplexity API.
 
     Args:
         query: The search query to send to Perplexity API
         model: The Perplexity model to use (default: PerplexityModel.SONAR)
         search_mode: The search mode to use (default: SearchMode.WEB)
+        recency_filter: Time filter for results (e.g., 'week', 'day')
+        city: City name for location-based search
+        country: Two letter ISO country code
 
     Returns:
         str: The response content from Perplexity API or error message
@@ -53,6 +58,16 @@ def _call_perplexity_api(query: str, model: str = PerplexityModel.SONAR, search_
         "search_mode": search_mode
     }
     
+    if recency_filter:
+        payload["search_recency_filter"] = recency_filter
+    
+    if city or country:
+        payload["web_search_options"] = {"user_location": {}}
+        if city:
+            payload["web_search_options"]["user_location"]["city"] = city
+        if country:
+            payload["web_search_options"]["user_location"]["country"] = country
+    
     try:
         with httpx.Client(timeout=30.0) as client:
             response = client.post(url, headers=headers, json=payload)
@@ -67,7 +82,8 @@ def _call_perplexity_api(query: str, model: str = PerplexityModel.SONAR, search_
         return f"Error: {str(e)}"
 
 @mcp.tool()
-def web_search(query: str, model: PerplexityModel = PerplexityModel.SONAR) -> str:
+def web_search(query: str, model: PerplexityModel = PerplexityModel.SONAR, 
+               recency_filter: Optional[str] = None, city: Optional[str] = None, country: Optional[str] = None) -> str:
     """Search the web using Perplexity Sonar API for real-time information.
 
     Args:
@@ -75,15 +91,19 @@ def web_search(query: str, model: PerplexityModel = PerplexityModel.SONAR) -> st
         model: The Perplexity model to use. Options: "sonar", "sonar-pro", 
                "sonar-deep-research", "sonar-reasoning", "sonar-reasoning-pro"
                (default: "sonar")
+        recency_filter: Time filter for results (e.g., 'week', 'day')
+        city: City name for location-based search
+        country: Two letter ISO country code
 
     Returns:
         str: The search results and answer from Perplexity API
     """
     logger.info(f"Web search request: {query[:50]}...")
-    return _call_perplexity_api(query, model, SearchMode.WEB)
+    return _call_perplexity_api(query, model, SearchMode.WEB, recency_filter, city, country)
 
 @mcp.tool()
-def web_search_academic(query: str, model: PerplexityModel = PerplexityModel.SONAR) -> str:
+def web_search_academic(query: str, model: PerplexityModel = PerplexityModel.SONAR,
+                       recency_filter: Optional[str] = None, city: Optional[str] = None, country: Optional[str] = None) -> str:
     """Search academic sources using Perplexity Sonar API for scholarly information.
 
     Args:
@@ -91,9 +111,12 @@ def web_search_academic(query: str, model: PerplexityModel = PerplexityModel.SON
         model: The Perplexity model to use. Options: "sonar", "sonar-pro", 
                "sonar-deep-research", "sonar-reasoning", "sonar-reasoning-pro"
                (default: "sonar")
+        recency_filter: Time filter for results (e.g., 'week', 'day')
+        city: City name for location-based search
+        country: Two letter ISO country code
 
     Returns:
         str: The search results from academic sources via Perplexity API
     """
     logger.info(f"Academic search request: {query[:50]}...")
-    return _call_perplexity_api(query, model, SearchMode.ACADEMIC)
+    return _call_perplexity_api(query, model, SearchMode.ACADEMIC, recency_filter, city, country)
