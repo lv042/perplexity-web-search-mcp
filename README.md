@@ -16,8 +16,8 @@ An MCP (Model Context Protocol) server that integrates Perplexity's powerful Son
 ## 🤖 Compatible AI Systems
 
 This MCP server works seamlessly with:
-- **Claude** (Anthropic)
-- **Amazon Q Developer**
+- **Claude** 
+- **Amazon Q**
 - **Google Gemini**
 - **OpenAI Codex**
 - **Any MCP-compatible AI assistant**
