@@ -1,4 +1,4 @@
-# 🔍 Perplexity Sonar MCP
+# 🔍 Perplexity Web-Search MCP
 
 > **Supercharge your AI assistant with real-time web search and academic research capabilities**
 
