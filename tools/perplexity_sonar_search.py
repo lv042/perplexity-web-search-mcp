@@ -7,14 +7,27 @@ from mcp_server import mcp
 logger = logging.getLogger(__name__)
 
 class PerplexityModel(str, Enum):
+    """Available Perplexity Sonar models for different use cases."""
     SONAR = "sonar"
     SONAR_PRO = "sonar-pro"
     SONAR_DEEP_RESEARCH = "sonar-deep-research"
     SONAR_REASONING = "sonar-reasoning"
     SONAR_REASONING_PRO = "sonar-reasoning-pro"
 
-def _call_perplexity_api(query: str, model: str = PerplexityModel.SONAR_PRO) -> str:
-    """Helper function to call Perplexity API."""
+def _call_perplexity_api(query: str, model: str = PerplexityModel.SONAR) -> str:
+    """Helper function to call Perplexity API.
+
+    Args:
+        query: The search query to send to Perplexity API
+        model: The Perplexity model to use (default: PerplexityModel.SONAR)
+
+    Returns:
+        str: The response content from Perplexity API or error message
+
+    Raises:
+        httpx.TimeoutException: If the API request times out
+        Exception: For other API-related errors
+    """
     logger.debug(f"Calling Perplexity API with model: {model}")
     
     api_key = os.getenv("PERPLEXITY_API_KEY")
@@ -34,17 +47,30 @@ def _call_perplexity_api(query: str, model: str = PerplexityModel.SONAR_PRO) -> 
     }
     
     try:
-        with httpx.Client() as client:
+        with httpx.Client(timeout=30.0) as client:
             response = client.post(url, headers=headers, json=payload)
             response.raise_for_status()
             logger.info(f"API call successful for query: {query[:50]}...")
             return response.json()["choices"][0]["message"]["content"]
+    except httpx.TimeoutException:
+        logger.error("API call timed out")
+        return "Error: Request timed out"
     except Exception as e:
         logger.error(f"API call failed: {str(e)}")
         return f"Error: {str(e)}"
 
 @mcp.tool()
 def perplexity_sonar_search(query: str, model: PerplexityModel = PerplexityModel.SONAR) -> str:
-    """Search using Perplexity Sonar API for real-time information."""
+    """Search using Perplexity Sonar API for real-time information.
+
+    Args:
+        query: The search query or question to ask Perplexity
+        model: The Perplexity model to use. Options: "sonar", "sonar-pro", 
+               "sonar-deep-research", "sonar-reasoning", "sonar-reasoning-pro"
+               (default: "sonar")
+
+    Returns:
+        str: The search results and answer from Perplexity API
+    """
     logger.info(f"Search request: {query[:50]}...")
     return _call_perplexity_api(query, model)
