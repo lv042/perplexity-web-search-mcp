@@ -1,6 +1,26 @@
-# Perplexity Sonar MCP
+# 🔍 Perplexity Sonar MCP
 
-MCP server for Perplexity Sonar integration providing web and academic search capabilities.
+> **Supercharge your AI assistant with real-time web search and academic research capabilities**
+
+An MCP (Model Context Protocol) server that integrates Perplexity's powerful Sonar API, giving your AI assistant access to current information from the web and scholarly sources.
+
+## ✨ Features
+
+- 🌐 **Real-time web search** - Get current information from across the internet
+- 🎓 **Academic search** - Access peer-reviewed papers and scholarly sources  
+- 📍 **Location-aware results** - Filter by city and country
+- ⏰ **Time-filtered search** - Get recent results (day, week, etc.)
+- 🧠 **Multiple AI models** - Choose from various Perplexity Sonar models
+- 🔌 **Universal compatibility** - Works with any MCP-compatible system
+
+## 🤖 Compatible AI Systems
+
+This MCP server works seamlessly with:
+- **Claude** (Anthropic)
+- **Amazon Q Developer**
+- **Google Gemini**
+- **OpenAI Codex**
+- **Any MCP-compatible AI assistant**
 
 ## Installation
 
