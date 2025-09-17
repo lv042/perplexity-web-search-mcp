@@ -22,6 +22,63 @@ This MCP server works seamlessly with:
 - **OpenAI Codex**
 - **Any MCP-compatible AI assistant**
 
+## 🚀 Exemplary Amazon Q Developer Setup
+
+Here's how to properly integrate this MCP server with Amazon Q Developer:
+
+### 1. Locate your Amazon Q agent configuration
+```bash
+~/.aws/amazonq/cli-agents/dev.json
+```
+
+### 2. Add the sonar MCP server to your configuration
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/aws/amazon-q-developer-cli/refs/heads/main/schemas/agent-v1.json",
+  "name": "dev",
+  "description": "",
+  "mcpServers": {
+    "sonar": {
+      "command": "/Users/your-username/SoftwareProjects/perplexity_sonar_mcp/.venv/bin/python",
+      "args": ["/Users/your-username/SoftwareProjects/perplexity_sonar_mcp/main.py"],
+      "cwd": "/Users/your-username/SoftwareProjects/perplexity_sonar_mcp",
+      "env": {
+        "PERPLEXITY_API_KEY": "pplx-your-api-key-here"
+      }
+    }
+  },
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "use_aws",
+    "@sonar"
+  ]
+}
+```
+
+### 3. Usage Example
+```bash
+[dev] > Web search: "Is AI a bubble?"
+
+🛠️  Using tool: web_search from mcp server sonar
+ ⋮
+ ● Running web_search with the param:
+ ⋮  {
+ ⋮    "name": "web_search",
+ ⋮    "arguments": {
+ ⋮      "query": "Is AI a bubble?"
+ ⋮    }
+ ⋮  }
+
+Allow this action? Use 't' to trust (always allow) this tool for the session. [y/n/t]: y
+
+ ⋮
+ ● Completed in 9.990s
+
+> Based on current market analysis, AI is widely considered to be in a bubble phase...
+```
+
 ## Installation
 
 ### With uv (recommended)
