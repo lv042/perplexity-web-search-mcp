@@ -131,9 +131,6 @@ python main.py
 
 ## Tools
 
-### `hello_world`
-Basic example tool for testing MCP functionality.
-
 ### `web_search`
 Search the web using Perplexity Sonar API for real-time information.
 
